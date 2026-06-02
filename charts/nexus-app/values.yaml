@@ -1,0 +1,49 @@
+backend:
+  appBackendContainer:
+    image:
+      repository: strycks/nexus-commerce-backend
+      tag: latest
+    imagePullPolicy: Always
+  nodeSelector: {}
+  replicas: 2
+  tolerations: []
+  topologySpreadConstraints: []
+configs:
+  frontendUrl: http://192.168.49.2:80
+  secure: "true"
+  systemEmail: ""
+feService:
+  ports:
+  - nodePort: 30073
+    port: 80
+    targetPort: 80
+  type: NodePort
+frontend:
+  appFrontendContainer:
+    image:
+      repository: strycks/nexus-commerce-frontend
+      tag: latest
+    imagePullPolicy: Always
+  nodeSelector: {}
+  replicas: 2
+  tolerations: []
+  topologySpreadConstraints: []
+kubernetesClusterDomain: cluster.local
+secrets:
+  adminEmail: ""
+  dbPassword: ""
+  dbSource: ""
+  dbUsername: ""
+  googleClientId: ""
+  jwtSecret: "jwtSecret"
+  mailHost: ""
+  mailPassword: ""
+  mailPort: "587"
+  mailUsername: ""
+  redisUrl: ""
+service:
+  ports:
+  - nodePort: 30080
+    port: 8080
+    targetPort: 8080
+  type: NodePort

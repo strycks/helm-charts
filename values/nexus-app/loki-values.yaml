@@ -1,0 +1,9 @@
+grafana:
+  enabled: false
+loki:
+  image:
+    tag: 2.9.3
+prometheus:
+  alertmanager:
+    enabled: false
+  enabled: false

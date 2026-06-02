@@ -1,0 +1,13 @@
+kubelet:
+  serviceMonitor:
+    insecureSkipVerify: true
+    
+grafana:
+  service:
+    type: NodePort
+    nodePort: 30917
+    
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 30795

@@ -1,0 +1,16 @@
+configs:
+  frontendUrl: http://localhost:80
+  secure: "false"
+  systemEmail: "onboarding@resend.dev"
+secrets:
+  adminEmail: ""
+  dbPassword: ""
+  dbSource: "jdbc:"
+  dbUsername: ""
+  googleClientId: "120111060609-var0nnfmjm72a20hmj3lk3fi9ckp0l18.apps.googleusercontent.com"
+  jwtSecret: "321df24860ad10d15232fd2b39232fad32f55e3d810a0284610012e297f819a44123"
+  mailHost: "smtp.resend.com"
+  mailPassword: ""
+  mailPort: "587"
+  mailUsername: "resend"
+  redisUrl: ""

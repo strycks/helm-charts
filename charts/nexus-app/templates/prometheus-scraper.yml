@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "nexus-app.fullname" . }}-spring-boot-annotation-monitor
+  namespace: monitoring
+  labels:
+    release: promo-stack
+  {{- include "nexus-app.labels" . | nindent 4 }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - default
+  podMetricsEndpoints:
+  - interval: 15s
+    path: /actuator/prometheus
+    port: http
+  selector:
+    matchLabels:
+      app: app-backend

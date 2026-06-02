@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-app.fullname" . }}-frontend
+  labels:
+  {{- include "nexus-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: app-frontend
+    {{- include "nexus-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: app-frontend
+      {{- include "nexus-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "nexus-app.fullname" . }}-configs
+        image: {{ .Values.frontend.appFrontendContainer.image.repository }}:{{ .Values.frontend.appFrontendContainer.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.frontend.appFrontendContainer.imagePullPolicy }}
+        name: app-frontend-container
+        ports:
+        - containerPort: 5173
+          name: http
+        resources: {}
+      nodeSelector: {{- toYaml .Values.frontend.nodeSelector | nindent 8 }}
+      serviceAccountName: {{ include "nexus-app.serviceAccountName" . }}
+      tolerations: {{- toYaml .Values.frontend.tolerations | nindent 8 }}
+      topologySpreadConstraints: {{- toYaml .Values.frontend.topologySpreadConstraints
+        | nindent 8 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nexus-app.fullname" . }}-fe-service
+  labels:
+  {{- include "nexus-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.feService.type }}
+  selector:
+    app: app-frontend
+    {{- include "nexus-app.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.feService.ports | toYaml | nindent 2 }}

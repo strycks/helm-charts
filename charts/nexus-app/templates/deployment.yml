@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nexus-app.fullname" . }}-backend
+  labels:
+  {{- include "nexus-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: app-backend
+    {{- include "nexus-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: app-backend
+      {{- include "nexus-app.selectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        envFrom:
+        - secretRef:
+            name: {{ include "nexus-app.fullname" . }}-secrets
+        - configMapRef:
+            name: {{ include "nexus-app.fullname" . }}-configs
+        image: {{ .Values.backend.appBackendContainer.image.repository }}:{{ .Values.backend.appBackendContainer.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.backend.appBackendContainer.imagePullPolicy }}
+        name: app-backend-container
+        ports:
+        - containerPort: 8080
+          name: http
+        resources: {}
+      nodeSelector: {{- toYaml .Values.backend.nodeSelector | nindent 8 }}
+      serviceAccountName: {{ include "nexus-app.serviceAccountName" . }}
+      tolerations: {{- toYaml .Values.backend.tolerations | nindent 8 }}
+      topologySpreadConstraints: {{- toYaml .Values.backend.topologySpreadConstraints |
+        nindent 8 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nexus-app.fullname" . }}-service
+  labels:
+  {{- include "nexus-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: app-backend
+    {{- include "nexus-app.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.service.ports | toYaml | nindent 2 }}
