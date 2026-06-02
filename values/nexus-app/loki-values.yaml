@@ -1,6 +1,7 @@
 grafana:
   enabled: false
 loki:
+  isDefault: false
   image:
     tag: 2.9.3
 prometheus:
