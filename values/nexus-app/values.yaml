@@ -14,3 +14,4 @@ secrets:
   mailPort: "587"
   mailUsername: "resend"
   redisUrl: ""
+  discordWebhookUrl: ""

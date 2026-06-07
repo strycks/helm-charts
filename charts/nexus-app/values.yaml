@@ -41,6 +41,7 @@ secrets:
   mailPort: "587"
   mailUsername: ""
   redisUrl: ""
+  discordWebhookUrl: ""
 service:
   ports:
   - nodePort: 30080
